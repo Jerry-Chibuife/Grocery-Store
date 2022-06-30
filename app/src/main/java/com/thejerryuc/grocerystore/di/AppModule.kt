@@ -1,7 +1,12 @@
 package com.thejerryuc.grocerystore.di
 
+import android.app.Application
+import androidx.room.Room
+import com.thejerryuc.grocerystore.data.local.GroceriesDatabase
 import com.thejerryuc.grocerystore.data.remote.Api
+import com.thejerryuc.grocerystore.data.repositories.GroceryRepoImpl
 import com.thejerryuc.grocerystore.data.repositories.UserRepoImpl
+import com.thejerryuc.grocerystore.domain.repositories.GroceryRepo
 import com.thejerryuc.grocerystore.domain.repositories.UserRepo
 import com.thejerryuc.grocerystore.domain.usecases.auth.AuthenticationUseCases
 import com.thejerryuc.grocerystore.domain.usecases.auth.Login
@@ -47,5 +52,19 @@ object AppModule {
     @Singleton
     fun provideAuthUseCases(repo: UserRepo): AuthenticationUseCases{
         return AuthenticationUseCases(login = Login(userRepo = repo), register = Register(userRepo = repo))
+    }
+
+    @Provides
+    @Singleton
+    fun providesGroceryDatabase(app : Application) : GroceriesDatabase {
+        return Room.databaseBuilder(
+            app, GroceriesDatabase::class.java, GroceriesDatabase.DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesGroceryRepo(db: GroceriesDatabase): GroceryRepo {
+        return GroceryRepoImpl(groceriesDAO = db.groceriesDAO)
     }
 }

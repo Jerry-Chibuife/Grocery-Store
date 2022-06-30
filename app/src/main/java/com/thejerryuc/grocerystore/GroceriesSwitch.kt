@@ -15,7 +15,7 @@ import com.thejerryuc.grocerystore.auth.viewmodels.AuthViewModel
 fun GroceriesSwitch(
     authViewModel: AuthViewModel = hiltViewModel()
 ){
-    val isAuthenticated = false
+    val isAuthenticated = authViewModel.state.value.isAuthenticated
 
     if(isAuthenticated){
         Column(modifier = Modifier.fillMaxSize(),
